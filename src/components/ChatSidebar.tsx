@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Loader2, Plus, MessageSquare, Trash2 } from 'lucide-react';
+import { Loader2, Plus, MessageSquare, Trash2, Menu } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { ja } from 'date-fns/locale';
 import { useToast } from '@/hooks/use-toast';
@@ -42,6 +42,7 @@ const ChatSidebar = ({
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
   const [openDialog, setOpenDialog] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleDeleteClick = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -100,13 +101,43 @@ const ChatSidebar = ({
     }
   };
 
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
   return (
     <>
-      <div className="w-80 h-full bg-muted/30 border-r border-border flex flex-col">
+      {/* Mobile Toggle Button */}
+      <Button 
+        variant="ghost" 
+        size="icon" 
+        className="md:hidden fixed top-20 left-4 z-50 bg-background/80 backdrop-blur"
+        onClick={toggleMobileMenu}
+      >
+        <Menu className="h-6 w-6" />
+      </Button>
+
+      {/* Mobile Sidebar Overlay */}
+      {isMobileMenuOpen && (
+        <div 
+          className="md:hidden fixed inset-0 bg-black/50 z-40"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
+      <div className={`
+        w-80 h-full bg-muted/30 border-r border-border flex flex-col
+        md:relative fixed inset-y-0 left-0 z-40
+        md:translate-x-0 transition-transform duration-200
+        ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+      `}>
         <div className="p-4">
           <Button 
             className="w-full gap-2" 
-            onClick={onNewConversation}
+            onClick={() => {
+              onNewConversation();
+              setIsMobileMenuOpen(false);
+            }}
           >
             <Plus className="h-4 w-4" />
             新しい会話
@@ -128,12 +159,15 @@ const ChatSidebar = ({
                 <div
                   key={conversation.id}
                   className={`
-                    flex justify-between items-center p-3 rounded-lg cursor-pointer
+                    group flex justify-between items-center p-3 rounded-lg cursor-pointer
                     ${activeConversation === conversation.id 
                       ? 'bg-accent text-accent-foreground' 
                       : 'hover:bg-accent/50'}
                   `}
-                  onClick={() => onConversationSelect(conversation.id)}
+                  onClick={() => {
+                    onConversationSelect(conversation.id);
+                    setIsMobileMenuOpen(false);
+                  }}
                 >
                   <div className="flex items-center gap-3 overflow-hidden">
                     <MessageSquare className="h-5 w-5 shrink-0 text-muted-foreground" />
@@ -147,7 +181,7 @@ const ChatSidebar = ({
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="opacity-0 group-hover:opacity-100 hover:bg-destructive/10 hover:text-destructive"
+                    className="opacity-70 md:opacity-0 group-hover:opacity-100 hover:bg-destructive/10 hover:text-destructive"
                     onClick={(e) => handleDeleteClick(conversation.id, e)}
                   >
                     <Trash2 className="h-4 w-4" />

@@ -25,6 +25,7 @@ const ChatInterface = ({ conversationId, onConversationCreated }: ChatInterfaceP
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
   // Fetch messages for the active conversation
   useEffect(() => {
@@ -35,6 +36,7 @@ const ChatInterface = ({ conversationId, onConversationCreated }: ChatInterfaceP
       }
       
       try {
+        setFetchError(null);
         const { data, error } = await supabase
           .from('messages')
           .select('*')
@@ -42,7 +44,9 @@ const ChatInterface = ({ conversationId, onConversationCreated }: ChatInterfaceP
           .order('created_at', { ascending: true });
         
         if (error) {
-          throw error;
+          console.error('Error fetching messages:', error);
+          setFetchError('メッセージの読み込みに失敗しました');
+          return;
         }
         
         // Cast the role to ensure it conforms to our Message type
@@ -54,16 +58,12 @@ const ChatInterface = ({ conversationId, onConversationCreated }: ChatInterfaceP
         setMessages(typedMessages);
       } catch (error) {
         console.error('Error fetching messages:', error);
-        toast({
-          title: 'エラーが発生しました',
-          description: 'メッセージの読み込みに失敗しました。',
-          variant: 'destructive',
-        });
+        setFetchError('メッセージの読み込みに失敗しました');
       }
     };
 
     fetchMessages();
-  }, [conversationId, toast]);
+  }, [conversationId]);
 
   // Scroll to bottom when messages change
   useEffect(() => {
@@ -100,7 +100,7 @@ const ChatInterface = ({ conversationId, onConversationCreated }: ChatInterfaceP
       });
       
       if (response.error) {
-        throw new Error(response.error.message);
+        throw new Error(response.error.message || '不明なエラーが発生しました');
       }
       
       const data = await response.data;
@@ -159,7 +159,7 @@ const ChatInterface = ({ conversationId, onConversationCreated }: ChatInterfaceP
   };
 
   return (
-    <div className="flex-1 flex flex-col h-full max-h-[calc(100vh-9rem)] bg-background/50 border-l border-border">
+    <div className="flex-1 flex flex-col h-full max-h-screen bg-background/50 border-l border-border md:pt-0 pt-16">
       <div className="p-4 border-b border-border">
         <h2 className="text-lg font-medium">
           {conversationId ? '会話を続ける' : '新しい会話を始める'}
@@ -170,6 +170,20 @@ const ChatInterface = ({ conversationId, onConversationCreated }: ChatInterfaceP
       </div>
       
       <div className="flex-1 overflow-y-auto p-4">
+        {fetchError && (
+          <div className="p-4 mb-4 rounded-md bg-destructive/10 text-destructive">
+            <p>{fetchError}</p>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="mt-2"
+              onClick={() => window.location.reload()}
+            >
+              再読み込み
+            </Button>
+          </div>
+        )}
+        
         {messages.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center text-center p-8">
             <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center mb-4">
@@ -212,7 +226,7 @@ const ChatInterface = ({ conversationId, onConversationCreated }: ChatInterfaceP
                 className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 <div 
-                  className={`max-w-3/4 rounded-lg p-4 ${
+                  className={`max-w-3/4 md:max-w-2/3 rounded-lg p-4 ${
                     message.role === 'user' 
                       ? 'bg-primary text-primary-foreground ml-12' 
                       : 'bg-muted mr-12'

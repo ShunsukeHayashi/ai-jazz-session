@@ -1,4 +1,3 @@
-
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { supabaseClient } from "../_shared/supabase-client.ts";
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
@@ -188,11 +187,10 @@ serve(async (req) => {
 
     const supabase = supabaseClient(req);
     
-    // Get user ID from auth
+    // Get user ID - anonymously if not authenticated
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      throw new Error('Authentication required');
-    }
+    // Use a default anonymous user ID if not authenticated
+    const userId = user?.id || 'anonymous-user';
     
     // Create conversation if not provided
     let activeConversationId = conversationId;
@@ -200,7 +198,7 @@ serve(async (req) => {
       const { data: newConversation, error: conversationError } = await supabase
         .from('conversations')
         .insert({
-          user_id: user.id,
+          user_id: userId,
           title: message.substring(0, 50) + (message.length > 50 ? '...' : '')
         })
         .select('id')

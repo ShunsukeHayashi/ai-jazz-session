@@ -18,33 +18,34 @@ const ChatPage = () => {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [activeConversation, setActiveConversation] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchConversations = async () => {
       try {
         setIsLoading(true);
+        setError(null);
+        
         const { data, error } = await supabase
           .from('conversations')
           .select('id, title, created_at')
           .order('created_at', { ascending: false });
         
         if (error) {
-          throw error;
-        }
-        
-        setConversations(data || []);
-        
-        // Set active conversation to the most recent one if available
-        if (data && data.length > 0 && !activeConversation) {
-          setActiveConversation(data[0].id);
+          console.warn("Error fetching conversations:", error);
+          // Don't throw error here - just set conversations to empty array
+          setConversations([]);
+        } else {
+          setConversations(data || []);
+          
+          // Set active conversation to the most recent one if available
+          if (data && data.length > 0 && !activeConversation) {
+            setActiveConversation(data[0].id);
+          }
         }
       } catch (error) {
-        console.error('Error fetching conversations:', error);
-        toast({
-          title: 'エラーが発生しました',
-          description: 'チャット履歴の読み込みに失敗しました。',
-          variant: 'destructive',
-        });
+        console.error('Unexpected error fetching conversations:', error);
+        setError('会話履歴の読み込み中にエラーが発生しました。');
       } finally {
         setIsLoading(false);
       }
@@ -63,13 +64,27 @@ const ChatPage = () => {
 
   const handleConversationCreated = (conversationId: string) => {
     setActiveConversation(conversationId);
+    // Refresh the conversation list 
+    setIsLoading(true);
+    supabase
+      .from('conversations')
+      .select('id, title, created_at')
+      .order('created_at', { ascending: false })
+      .then(({ data }) => {
+        if (data) setConversations(data);
+        setIsLoading(false);
+      })
+      .catch(error => {
+        console.error('Error refreshing conversations:', error);
+        setIsLoading(false);
+      });
   };
 
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
       
-      <main className="flex-1 flex">
+      <main className="flex-1 flex flex-col md:flex-row">
         <ChatSidebar 
           conversations={conversations}
           activeConversation={activeConversation}
