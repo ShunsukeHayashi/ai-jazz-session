@@ -38,15 +38,15 @@ const Concept = () => {
     <section id="concept" className="py-24 bg-secondary/50">
       <div className="container px-6 mx-auto">
         <div className="text-center mb-16" ref={conceptRef}>
-          <div className="chip mb-4 mx-auto">基本コンセプト</div>
+          <div className="chip mb-4 mx-auto">提供する価値</div>
           <h2 className="section-title">
             <AnimatedText 
-              text="AI駆動開発を日本中に広める" 
+              text="AIを即興で活用する新しい形" 
               className="shimmer-text"
             />
           </h2>
           <p className="section-subtitle">
-            AIを使って幸せになれる人を増やし、日本全国に笑顔を広げるプロジェクト
+            AIの導入を、ジャズのように自由に、楽しく、即興的に実現します
           </p>
         </div>
         
@@ -85,19 +85,19 @@ const Concept = () => {
 
 const conceptPoints = [
   {
-    icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-map"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" x2="9" y1="3" y2="18"/><line x1="15" x2="15" y1="6" y2="21"/></svg>,
-    title: "全国縦断の旅",
-    description: "日本全国のホテルや地域施設を訪れ、AIの可能性を開拓します。現地の課題や魅力を理解し、AIによる解決策を提案します。",
+    icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-zap"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>,
+    title: "AIを即興で導入",
+    description: "事前準備なしで、現場のニーズに合わせたAIサービスをその場で開発。ジャズのような即興性で柔軟に対応します。",
   },
   {
     icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-youtube"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"/><path d="m10 15 5-3-5-3z"/></svg>,
-    title: "YouTube発信",
-    description: "AIセッションの様子をYouTubeで発信し、多くの人にAIの魅力と可能性を伝えます。視聴者が楽しみながらAIについて学べるコンテンツを制作します。",
+    title: "YouTubeでPR",
+    description: "シュンスケのYouTubeチャンネルで施設の魅力を全国に発信。AIとエンターテイメントが融合した魅力的な動画で注目を集めます。",
   },
   {
-    icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-smile"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" x2="9.01" y1="9" y2="9"/><line x1="15" x2="15.01" y1="9" y2="9"/></svg>,
-    title: "幸せの創出",
-    description: "AIを通じて人々の生活を豊かにし、笑顔を増やすことを使命とします。テクノロジーが生み出す新しい価値を、わかりやすく楽しく伝えます。",
+    icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-hotel"><path d="M18 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2Z"/><path d="m9 16l.348-.24c1.465-1.013 3.84-1.013 5.304 0L15 16"/><path d="M8 7h.01"/><path d="M16 7h.01"/><path d="M12 7h.01"/><path d="M12 11h.01"/><path d="M16 11h.01"/><path d="M8 11h.01"/><path d="M10 22v-6.5m4 0V22"/></svg>,
+    title: "無料で参加可能",
+    description: "宿泊や飲食の提供だけで参加可能。特別な予算は必要ありません。気軽にAI導入を試すことができます。",
   },
 ];
 

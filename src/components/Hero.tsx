@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import AnimatedText from './AnimatedText';
+import { Button } from '@/components/ui/button';
 
 const Hero = () => {
   const [showImage, setShowImage] = useState(false);
@@ -31,34 +32,40 @@ const Hero = () => {
             
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 animate-fade-up">
               <AnimatedText 
-                text="シュンスケの旅" 
+                text="AI×ジャズ×旅で、" 
                 className="shimmer-text block mb-2"
+              />
+              <AnimatedText 
+                text="日本を笑顔に変える" 
+                className="shimmer-text block mb-2"
+                delay={200}
               />
               <span className="text-2xl md:text-3xl lg:text-4xl font-medium text-foreground/90 block mt-2">
                 <AnimatedText 
-                  text="AIセッションジャズオーケストレーション" 
+                  text="『シュンスケの旅』始動！" 
                   delay={400}
                 />
               </span>
             </h1>
             
             <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-xl mx-auto lg:mx-0 animate-fade-up animate-delay-300">
-              AIを駆動開発を日本中に広め、AIを使って幸せになれる人を増やす。即興性とジャズの精神で、全国を旅しながらAIの可能性を広げます。
+              AI駆動開発を全国に即興セッションで広め、あなたの施設や地域を「AIの力」で元気にします。
             </p>
             
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 animate-fade-up animate-delay-400">
-              <a 
-                href="#concept" 
+              <Button 
+                onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
                 className="px-6 py-3 rounded-full bg-primary text-white font-medium transition-all hover:shadow-lg hover:shadow-primary/20 hover:scale-105 active:scale-95"
               >
-                詳細を見る
-              </a>
-              <a 
-                href="#workflow" 
+                無料でAIセッションを申し込む！
+              </Button>
+              <Button 
+                onClick={() => document.getElementById('concept')?.scrollIntoView({ behavior: 'smooth' })}
+                variant="secondary"
                 className="px-6 py-3 rounded-full bg-secondary text-foreground font-medium transition-all hover:bg-secondary/80 hover:scale-105 active:scale-95"
               >
-                セッションの流れ
-              </a>
+                詳細を見る
+              </Button>
             </div>
           </div>
           
