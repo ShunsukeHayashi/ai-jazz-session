@@ -1,3 +1,4 @@
+
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { supabaseClient } from "../_shared/supabase-client.ts";
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
@@ -168,13 +169,19 @@ const executeAgentTool = async (toolName: string, params: Record<string, any>): 
 };
 
 serve(async (req) => {
+  console.log("Chat function received request");
+  
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { message, conversationId, includeContext = true, agentMode = false } = await req.json();
+    // Parse request body
+    const requestData = await req.json();
+    console.log("Request data:", JSON.stringify(requestData));
+    
+    const { message, conversationId, includeContext = true, agentMode = false } = requestData;
     
     if (!message) {
       throw new Error('Message is required');
@@ -185,16 +192,19 @@ serve(async (req) => {
       throw new Error('Missing OpenAI API key');
     }
 
+    console.log("Creating Supabase client");
     const supabase = supabaseClient(req);
     
     // Get user ID - anonymously if not authenticated
     const { data: { user } } = await supabase.auth.getUser();
     // Use a default anonymous user ID if not authenticated
     const userId = user?.id || 'anonymous-user';
+    console.log("User ID:", userId);
     
     // Create conversation if not provided
     let activeConversationId = conversationId;
     if (!activeConversationId) {
+      console.log("Creating new conversation");
       const { data: newConversation, error: conversationError } = await supabase
         .from('conversations')
         .insert({
@@ -205,13 +215,16 @@ serve(async (req) => {
         .single();
       
       if (conversationError) {
-        throw conversationError;
+        console.error("Error creating conversation:", conversationError);
+        throw new Error(`Conversation creation failed: ${conversationError.message}`);
       }
       
       activeConversationId = newConversation.id;
+      console.log("Created conversation with ID:", activeConversationId);
     }
     
     // Save user message
+    console.log("Saving user message to conversation:", activeConversationId);
     const { error: messageError } = await supabase
       .from('messages')
       .insert({
@@ -221,10 +234,12 @@ serve(async (req) => {
       });
     
     if (messageError) {
-      throw messageError;
+      console.error("Error saving message:", messageError);
+      throw new Error(`Message saving failed: ${messageError.message}`);
     }
     
     // Generate embeddings for the query
+    console.log("Generating embeddings");
     const embeddingResponse = await fetch('https://api.openai.com/v1/embeddings', {
       method: 'POST',
       headers: {
@@ -239,6 +254,7 @@ serve(async (req) => {
 
     if (!embeddingResponse.ok) {
       const error = await embeddingResponse.json();
+      console.error("Embedding API error:", error);
       throw new Error(`OpenAI embedding API error: ${error.error?.message || 'Unknown error'}`);
     }
 
@@ -248,6 +264,7 @@ serve(async (req) => {
     // Retrieve relevant documents if context is requested
     let contextText = '';
     if (includeContext) {
+      console.log("Retrieving context from documents");
       const { data: documents, error: searchError } = await supabase.rpc(
         'match_documents',
         {
@@ -258,12 +275,15 @@ serve(async (req) => {
       );
       
       if (searchError) {
-        throw searchError;
-      }
-      
-      if (documents && documents.length > 0) {
+        console.error("Error matching documents:", searchError);
+        // Don't throw here, continue without context
+        console.log("Continuing without document context");
+      } else if (documents && documents.length > 0) {
         contextText = 'Relevant information:\n' + 
           documents.map(doc => doc.content).join('\n\n');
+        console.log("Found relevant documents:", documents.length);
+      } else {
+        console.log("No relevant documents found");
       }
     }
     
@@ -285,6 +305,7 @@ serve(async (req) => {
     }
     
     // Prepare conversation history
+    console.log("Retrieving message history");
     const { data: messageHistory, error: historyError } = await supabase
       .from('messages')
       .select('role, content')
@@ -293,7 +314,9 @@ serve(async (req) => {
       .limit(10);
     
     if (historyError) {
-      throw historyError;
+      console.error("Error retrieving message history:", historyError);
+      // Don't throw here, continue with empty history
+      console.log("Continuing with empty conversation history");
     }
     
     // Prepare the prompt with system message, context, and history
@@ -306,10 +329,15 @@ serve(async (req) => {
         content: agentResponse 
           ? `${systemContent}\n\nユーザーの質問に関連して以下の情報を取得しました：\n${agentResponse}` 
           : systemContent
-      },
-      ...messageHistory
+      }
     ];
     
+    // Add conversation history if available
+    if (messageHistory && messageHistory.length > 0) {
+      messages.push(...messageHistory);
+    }
+    
+    console.log("Calling OpenAI API");
     // Call OpenAI chat API
     const chatResponse = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -327,13 +355,16 @@ serve(async (req) => {
 
     if (!chatResponse.ok) {
       const error = await chatResponse.json();
+      console.error("OpenAI chat API error:", error);
       throw new Error(`OpenAI chat API error: ${error.error?.message || 'Unknown error'}`);
     }
 
     const completion = await chatResponse.json();
     const aiResponse = completion.choices[0].message.content;
+    console.log("Received AI response");
     
     // Save AI response
+    console.log("Saving AI response to database");
     const { error: aiMessageError } = await supabase
       .from('messages')
       .insert({
@@ -343,9 +374,12 @@ serve(async (req) => {
       });
     
     if (aiMessageError) {
-      throw aiMessageError;
+      console.error("Error saving AI response:", aiMessageError);
+      // Continue even if there's an error saving the response
+      console.log("Continuing despite error saving AI response");
     }
     
+    console.log("Returning successful response");
     return new Response(
       JSON.stringify({ 
         message: aiResponse, 
@@ -358,7 +392,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ error: error.message }),
       { 
-        status: 400, 
+        status: 500, 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
       }
     );

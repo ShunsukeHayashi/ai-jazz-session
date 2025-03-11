@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -85,6 +86,7 @@ const ChatInterface = ({ conversationId, onConversationCreated }: ChatInterfaceP
     setMessages((prev) => [...prev, optimisticUserMsg]);
     
     try {
+      console.log("Calling chat Edge Function");
       const response = await supabase.functions.invoke('chat', {
         body: { 
           message: userMessage,
@@ -93,11 +95,17 @@ const ChatInterface = ({ conversationId, onConversationCreated }: ChatInterfaceP
         },
       });
       
+      console.log("Response from Edge Function:", response);
+      
       if (response.error) {
         throw new Error(response.error.message || '不明なエラーが発生しました');
       }
       
-      const data = await response.data;
+      const data = response.data;
+      
+      if (!data) {
+        throw new Error("エッジファンクションからのレスポンスが空です");
+      }
       
       if (data.error) {
         throw new Error(data.error);
@@ -109,6 +117,7 @@ const ChatInterface = ({ conversationId, onConversationCreated }: ChatInterfaceP
         onConversationCreated(newConversationId);
       }
       
+      // Fetch updated messages from the database
       const { data: updatedMessages, error: messagesError } = await supabase
         .from('messages')
         .select('*')
@@ -134,6 +143,7 @@ const ChatInterface = ({ conversationId, onConversationCreated }: ChatInterfaceP
         variant: 'destructive',
       });
       
+      // Remove the optimistic message if there was an error
       setMessages((prev) => prev.filter(msg => msg.id !== optimisticUserMsg.id));
     } finally {
       setIsLoading(false);

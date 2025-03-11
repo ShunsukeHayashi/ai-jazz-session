@@ -62,29 +62,30 @@ const ChatPage = () => {
     setActiveConversation(conversationId);
   };
 
-  const handleConversationCreated = (conversationId: string) => {
+  const handleConversationCreated = async (conversationId: string) => {
     setActiveConversation(conversationId);
     // Refresh the conversation list
     setIsLoading(true);
     
-    // Use async/await pattern properly
-    const refreshConversations = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('conversations')
-          .select('id, title, created_at')
-          .order('created_at', { ascending: false });
+    try {
+      // Fix: Using async/await pattern properly
+      const { data, error } = await supabase
+        .from('conversations')
+        .select('id, title, created_at')
+        .order('created_at', { ascending: false });
           
-        if (error) throw error;
-        if (data) setConversations(data);
-      } catch (error) {
-        console.error('Error refreshing conversations:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    
-    refreshConversations();  // Execute the async function
+      if (error) throw error;
+      if (data) setConversations(data);
+    } catch (error) {
+      console.error('Error refreshing conversations:', error);
+      toast({
+        title: "エラー",
+        description: "会話リストの更新に失敗しました",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
