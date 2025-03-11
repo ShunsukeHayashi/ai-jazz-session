@@ -1,5 +1,6 @@
 
 import { Button } from '@/components/ui/button';
+import { CalendarIcon } from 'lucide-react';
 
 const CTASection = () => {
   return (
@@ -37,6 +38,13 @@ const CTASection = () => {
                 <span className="mr-2 text-primary">✓</span>
                 <span>宿泊・食事込みの充実サービス</span>
               </li>
+              <li className="flex items-start">
+                <span className="mr-2 text-primary">✓</span>
+                <span className="flex items-center">
+                  <CalendarIcon className="h-4 w-4 mr-1" />
+                  <span>2ヶ月に1回の定期開催（カレンダーから日程選択可）</span>
+                </span>
+              </li>
             </ul>
             
             <div className="mt-4 bg-background/50 p-3 rounded-lg border border-border">
@@ -72,7 +80,7 @@ const CTASection = () => {
           <div className="p-4 border border-border rounded-lg bg-background/50">
             <p className="text-sm text-muted-foreground">
               ※2ヶ月に1回開催、会場のホテル・旅館ではAI駆動開発による業務課題解決をお約束します。<br />
-              開催スケジュールは申し込み後にご案内いたします。
+              開催日程はカレンダーから選択できます。定員になり次第締め切りとなります。
             </p>
           </div>
         </div>
