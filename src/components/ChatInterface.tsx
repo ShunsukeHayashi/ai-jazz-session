@@ -45,7 +45,13 @@ const ChatInterface = ({ conversationId, onConversationCreated }: ChatInterfaceP
           throw error;
         }
         
-        setMessages(data || []);
+        // Cast the role to ensure it conforms to our Message type
+        const typedMessages = data?.map(msg => ({
+          ...msg,
+          role: msg.role as 'user' | 'assistant'
+        })) || [];
+        
+        setMessages(typedMessages);
       } catch (error) {
         console.error('Error fetching messages:', error);
         toast({
@@ -88,7 +94,8 @@ const ChatInterface = ({ conversationId, onConversationCreated }: ChatInterfaceP
       const response = await supabase.functions.invoke('chat', {
         body: { 
           message: userMessage,
-          conversationId 
+          conversationId,
+          agentMode: true // Enable agent functionality
         },
       });
       
@@ -120,7 +127,13 @@ const ChatInterface = ({ conversationId, onConversationCreated }: ChatInterfaceP
         throw messagesError;
       }
       
-      setMessages(updatedMessages || []);
+      // Cast the role to ensure it conforms to our Message type
+      const typedMessages = updatedMessages?.map(msg => ({
+        ...msg,
+        role: msg.role as 'user' | 'assistant'
+      })) || [];
+      
+      setMessages(typedMessages);
       
     } catch (error) {
       console.error('Error sending message:', error);

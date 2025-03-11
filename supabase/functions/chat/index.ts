@@ -8,6 +8,53 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Simplified agent capability - executing predefined tools
+const executeAgentTool = async (toolName: string, params: any) => {
+  switch (toolName) {
+    case 'search_transactions':
+      // This would connect to a database to search transactions
+      return `Transaction information: Found records for ${params.query}`;
+    
+    case 'get_reservation_data':
+      // This would fetch reservation data
+      return `Reservation data for ${params.date || 'this month'}: Occupancy rate is 78%`;
+    
+    case 'calculate_revenue':
+      // This would calculate revenue based on transaction data
+      return `Revenue calculation: ¥${Math.floor(Math.random() * 1000000)} for the requested period`;
+    
+    default:
+      return null;
+  }
+};
+
+// Function to detect if a message contains a tool request
+const detectToolRequest = (message: string): { toolName: string, params: any } | null => {
+  // Simple keyword-based detection for demo purposes
+  if (message.includes('予約状況') || message.includes('reservation')) {
+    return {
+      toolName: 'get_reservation_data',
+      params: { date: 'current' }
+    };
+  }
+  
+  if (message.includes('取引') || message.includes('transaction') || message.includes('トランザクション')) {
+    return {
+      toolName: 'search_transactions',
+      params: { query: 'recent' }
+    };
+  }
+  
+  if (message.includes('収益') || message.includes('売上') || message.includes('revenue')) {
+    return {
+      toolName: 'calculate_revenue',
+      params: { period: 'monthly' }
+    };
+  }
+  
+  return null;
+};
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -15,7 +62,7 @@ serve(async (req) => {
   }
 
   try {
-    const { message, conversationId, includeContext = true } = await req.json();
+    const { message, conversationId, includeContext = true, agentMode = false } = await req.json();
     
     if (!message) {
       throw new Error('Message is required');
@@ -109,6 +156,15 @@ serve(async (req) => {
       }
     }
     
+    // Handle agent capabilities if enabled
+    let agentResponse = '';
+    if (agentMode) {
+      const toolRequest = detectToolRequest(message);
+      if (toolRequest) {
+        agentResponse = await executeAgentTool(toolRequest.toolName, toolRequest.params);
+      }
+    }
+    
     // Prepare conversation history
     const { data: messageHistory, error: historyError } = await supabase
       .from('messages')
@@ -122,10 +178,15 @@ serve(async (req) => {
     }
     
     // Prepare the prompt with system message, context, and history
+    const systemContent = `あなたは「シュンスケの旅」というAI駆動開発ハッカソンの専門アシスタントです。ホテル・旅館業界の課題解決や、AIを活用したビジネス改善について詳しく、丁寧かつ実用的な回答を日本語で提供してください。${contextText ? '\n\n' + contextText : ''}`;
+    
+    // Add agent information if available
     const messages = [
       {
         role: 'system',
-        content: `あなたは「シュンスケの旅」というAI駆動開発ハッカソンの専門アシスタントです。ホテル・旅館業界の課題解決や、AIを活用したビジネス改善について詳しく、丁寧かつ実用的な回答を日本語で提供してください。${contextText ? '\n\n' + contextText : ''}`
+        content: agentResponse 
+          ? `${systemContent}\n\nI've retrieved some information that might be helpful: ${agentResponse}` 
+          : systemContent
       },
       ...messageHistory
     ];
