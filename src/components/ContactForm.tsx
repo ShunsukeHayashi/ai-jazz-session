@@ -32,23 +32,44 @@ const ContactForm = () => {
     setIsSubmitting(true);
     
     try {
-      // Insert data into Supabase
-      const { error } = await supabase
+      // Insert data into Supabase contact_submissions table
+      const { error: contactError } = await supabase
         .from('contact_submissions')
         .insert([
           { 
             name: formData.name,
             email: formData.email,
             facility: formData.facility || null,
-            message: formData.message || null,
-            payment_method: formData.paymentMethod,
-            event_date: selectedDate ? selectedDate.toISOString() : null
+            message: formData.message || null
           }
         ]);
       
-      if (error) {
-        console.error('Error submitting form:', error);
-        throw error;
+      if (contactError) {
+        console.error('Error submitting contact form:', contactError);
+        throw contactError;
+      }
+      
+      // Create transaction record
+      const { error: transactionError } = await supabase
+        .from('transactions')
+        .insert([
+          { 
+            payment_method: formData.paymentMethod,
+            amount: 50000, // ¥50,000 per person
+            status: 'pending',
+            event_date: selectedDate ? selectedDate.toISOString() : null,
+            metadata: {
+              name: formData.name,
+              email: formData.email,
+              facility: formData.facility || null,
+              message: formData.message || null
+            }
+          }
+        ]);
+      
+      if (transactionError) {
+        console.error('Error creating transaction:', transactionError);
+        throw transactionError;
       }
       
       // Process payment (in a real implementation, this would integrate with Square's API)
