@@ -11,10 +11,11 @@ const ContactForm = () => {
     email: '',
     facility: '',
     message: '',
+    paymentMethod: 'square', // Default payment method
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
@@ -32,7 +33,8 @@ const ContactForm = () => {
             name: formData.name,
             email: formData.email,
             facility: formData.facility || null,
-            message: formData.message || null
+            message: formData.message || null,
+            payment_method: formData.paymentMethod
           }
         ]);
       
@@ -41,18 +43,32 @@ const ContactForm = () => {
         throw error;
       }
       
+      // Process payment (in a real implementation, this would integrate with Square's API)
+      console.log(`Processing payment with ${formData.paymentMethod}`);
+      
+      // In a real implementation, you would redirect to Square payment page or open a payment modal
+      
       // Reset form
       setFormData({
         name: '',
         email: '',
         facility: '',
         message: '',
+        paymentMethod: 'square',
       });
       
       toast({
         title: "お申し込みありがとうございます！",
-        description: "近日中にご連絡させていただきます。",
+        description: "決済ページへ移動します。お支払い完了後、近日中にご連絡させていただきます。",
       });
+      
+      // Simulate redirect to payment page
+      setTimeout(() => {
+        toast({
+          title: "決済処理中",
+          description: "Square決済システムへ接続しています...",
+        });
+      }, 1500);
       
     } catch (error) {
       console.error('Error:', error);
@@ -121,6 +137,24 @@ const ContactForm = () => {
           />
         </div>
         
+        <div>
+          <label htmlFor="paymentMethod" className="block text-sm font-medium mb-1">お支払い方法</label>
+          <select
+            id="paymentMethod"
+            name="paymentMethod"
+            className="w-full px-4 py-2 rounded-lg border border-border bg-background/50"
+            value={formData.paymentMethod}
+            onChange={handleChange}
+          >
+            <option value="square">Square決済</option>
+            <option value="cash">現金支払い (後日)</option>
+            <option value="bank">銀行振込</option>
+          </select>
+          <p className="text-xs text-muted-foreground mt-1">
+            ※Square決済を選択すると、送信後に決済ページへ移動します
+          </p>
+        </div>
+        
         <Button
           type="submit"
           className="w-full py-3 rounded-full bg-primary text-primary-foreground font-medium transition-all hover:shadow-lg hover:shadow-primary/20 hover:scale-105 active:scale-95"
@@ -129,7 +163,18 @@ const ContactForm = () => {
           {isSubmitting ? '送信中...' : '無料AIセッションを申し込む！'}
         </Button>
         
-        <p className="text-xs text-center text-muted-foreground mt-4">
+        <div className="flex items-center justify-center mt-4 space-x-2">
+          <img src="https://cdn.shopify.com/shopifycloud/shopify/assets/checkout/offsite-gateway-logos/square-45db28e462aa9066537122b2a28f11f630fb8bf49f7759bc28ea1422eea61b78.svg" 
+               alt="Square" className="h-6" />
+          <img src="https://cdn.shopify.com/shopifycloud/checkout-web/assets/0169695f4040ad6a.svg" 
+               alt="Visa" className="h-4" />
+          <img src="https://cdn.shopify.com/shopifycloud/checkout-web/assets/ae9ceec4c291bb5d.svg" 
+               alt="Mastercard" className="h-4" />
+          <img src="https://cdn.shopify.com/shopifycloud/checkout-web/assets/1d635a86a1f44066.svg" 
+               alt="American Express" className="h-4" />
+        </div>
+        
+        <p className="text-xs text-center text-muted-foreground mt-2">
           ※宿泊や飲食の提供だけで参加可能。特別な予算は不要です。
         </p>
       </div>

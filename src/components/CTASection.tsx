@@ -38,6 +38,18 @@ const CTASection = () => {
                 <span>宿泊・食事込みの充実サービス</span>
               </li>
             </ul>
+            
+            <div className="mt-4 bg-background/50 p-3 rounded-lg border border-border">
+              <p className="text-sm font-medium">お支払い方法</p>
+              <div className="flex items-center justify-center mt-2 space-x-3">
+                <img src="https://cdn.shopify.com/shopifycloud/shopify/assets/checkout/offsite-gateway-logos/square-45db28e462aa9066537122b2a28f11f630fb8bf49f7759bc28ea1422eea61b78.svg" 
+                    alt="Square" className="h-7" />
+                <span className="text-muted-foreground">|</span>
+                <span className="text-sm">銀行振込</span>
+                <span className="text-muted-foreground">|</span>
+                <span className="text-sm">現金払い</span>
+              </div>
+            </div>
           </div>
           
           <div className="flex flex-col md:flex-row justify-center gap-4 mb-8">
