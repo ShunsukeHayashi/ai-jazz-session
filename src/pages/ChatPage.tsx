@@ -64,10 +64,10 @@ const ChatPage = () => {
 
   const handleConversationCreated = (conversationId: string) => {
     setActiveConversation(conversationId);
-    // Refresh the conversation list 
+    // Refresh the conversation list
     setIsLoading(true);
     
-    // Fix: Use a proper async/await pattern with try/catch for error handling
+    // Use async/await pattern properly
     const refreshConversations = async () => {
       try {
         const { data, error } = await supabase
@@ -84,7 +84,7 @@ const ChatPage = () => {
       }
     };
     
-    refreshConversations();
+    refreshConversations();  // Execute the async function
   };
 
   return (
