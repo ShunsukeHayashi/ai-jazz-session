@@ -159,7 +159,7 @@ const ChatInterface = ({ conversationId, onConversationCreated }: ChatInterfaceP
   };
 
   return (
-    <div className="flex-1 flex flex-col h-full max-h-screen bg-background/50 border-l border-border md:pt-0 pt-16">
+    <div className="flex-1 flex flex-col h-full max-h-screen bg-background/50 border-l border-border">
       <div className="p-4 border-b border-border">
         <h2 className="text-lg font-medium">
           {conversationId ? '会話を続ける' : '新しい会話を始める'}

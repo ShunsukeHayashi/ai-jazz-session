@@ -52,7 +52,7 @@ const ChatPage = () => {
     };
 
     fetchConversations();
-  }, [activeConversation, toast]);
+  }, [activeConversation]);
 
   const handleNewConversation = () => {
     setActiveConversation(null);
@@ -84,7 +84,8 @@ const ChatPage = () => {
     <div className="flex flex-col min-h-screen">
       <Header />
       
-      <main className="flex-1 flex flex-col md:flex-row">
+      {/* Add pt-16 (padding-top) to push content below fixed header */}
+      <main className="flex-1 flex flex-col md:flex-row pt-16">
         <ChatSidebar 
           conversations={conversations}
           activeConversation={activeConversation}

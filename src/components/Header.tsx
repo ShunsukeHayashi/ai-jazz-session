@@ -30,8 +30,8 @@ const Header = () => {
       className={cn(
         'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
         isScrolled 
-          ? 'bg-white/70 dark:bg-black/70 backdrop-blur-lg shadow-sm py-4'
-          : 'bg-transparent py-6'
+          ? 'bg-white/90 dark:bg-black/90 backdrop-blur-lg shadow-sm py-4'
+          : 'bg-white/70 dark:bg-black/70 backdrop-blur-sm py-6'
       )}
     >
       <div className="container px-6 mx-auto">
@@ -82,8 +82,8 @@ const Header = () => {
           </button>
         </div>
 
-        {/* Mobile Navigation */}
-        <div className={`md:hidden transition-all duration-300 overflow-hidden ${isMobileMenuOpen ? 'max-h-60 mt-4' : 'max-h-0'}`}>
+        {/* Mobile Navigation - Added z-index and better positioning */}
+        <div className={`md:hidden transition-all duration-300 overflow-hidden absolute left-0 right-0 bg-white/90 dark:bg-black/90 backdrop-blur-lg shadow-md ${isMobileMenuOpen ? 'max-h-60 mt-4 px-6 py-4' : 'max-h-0'}`}>
           <div className="flex flex-col space-y-4 py-2">
             {navLinks.map((link) => (
               link.href.startsWith('/') ? (
