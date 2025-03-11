@@ -2,6 +2,8 @@
 import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { Link } from 'react-router-dom';
+import { MessageCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -22,7 +24,6 @@ const Header = () => {
     { name: 'カスタマー', href: '#customers' },
     { name: 'ワークフロー', href: '#workflow' },
     { name: '社会的意義', href: '#significance' },
-    { name: 'チャット', href: '/chat' },
   ];
 
   return (
@@ -68,18 +69,36 @@ const Header = () => {
                 </a>
               )
             ))}
+            
+            {/* Prominent Chat Button */}
+            <Link to="/chat">
+              <Button className="flex items-center gap-2 bg-primary hover:bg-primary/90">
+                <MessageCircle className="h-4 w-4" />
+                AIチャット
+              </Button>
+            </Link>
           </nav>
 
           {/* Mobile Menu Toggle */}
-          <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden flex flex-col space-y-1.5 p-2"
-            aria-label="Toggle menu"
-          >
-            <span className={`block w-6 h-0.5 bg-foreground transition-all duration-300 ${isMobileMenuOpen ? 'rotate-45 translate-y-2' : ''}`}></span>
-            <span className={`block w-6 h-0.5 bg-foreground transition-all duration-300 ${isMobileMenuOpen ? 'opacity-0' : ''}`}></span>
-            <span className={`block w-6 h-0.5 bg-foreground transition-all duration-300 ${isMobileMenuOpen ? '-rotate-45 -translate-y-2' : ''}`}></span>
-          </button>
+          <div className="flex items-center gap-2 md:hidden">
+            {/* Chat button for mobile */}
+            <Link to="/chat" className="mr-2">
+              <Button size="sm" variant="outline" className="flex items-center gap-1">
+                <MessageCircle className="h-4 w-4" />
+                <span className="sr-only md:not-sr-only">チャット</span>
+              </Button>
+            </Link>
+            
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="flex flex-col space-y-1.5 p-2"
+              aria-label="Toggle menu"
+            >
+              <span className={`block w-6 h-0.5 bg-foreground transition-all duration-300 ${isMobileMenuOpen ? 'rotate-45 translate-y-2' : ''}`}></span>
+              <span className={`block w-6 h-0.5 bg-foreground transition-all duration-300 ${isMobileMenuOpen ? 'opacity-0' : ''}`}></span>
+              <span className={`block w-6 h-0.5 bg-foreground transition-all duration-300 ${isMobileMenuOpen ? '-rotate-45 -translate-y-2' : ''}`}></span>
+            </button>
+          </div>
         </div>
 
         {/* Mobile Navigation - Better positioning and styling */}
@@ -106,6 +125,15 @@ const Header = () => {
                 </a>
               )
             ))}
+            {/* Add Chat link to mobile menu as well */}
+            <Link
+              to="/chat"
+              className="text-sm font-medium text-primary hover:text-primary/80 flex items-center gap-2"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <MessageCircle className="h-4 w-4" />
+              AIチャットを試す
+            </Link>
           </div>
         </div>
       </div>

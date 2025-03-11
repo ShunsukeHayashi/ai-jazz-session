@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Send } from 'lucide-react';
+import { Send, RefreshCw, AlertTriangle } from 'lucide-react';
 import { formatRelative } from 'date-fns';
 import { ja } from 'date-fns/locale';
 
@@ -24,6 +24,7 @@ const ChatInterface = ({ conversationId, onConversationCreated }: ChatInterfaceP
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isRetrying, setIsRetrying] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [fetchError, setFetchError] = useState<string | null>(null);
 
@@ -150,6 +151,11 @@ const ChatInterface = ({ conversationId, onConversationCreated }: ChatInterfaceP
     }
   };
 
+  const handleRetry = () => {
+    // Refresh the page to restart the connection
+    window.location.reload();
+  };
+
   const formatDate = (dateString: string) => {
     try {
       return formatRelative(new Date(dateString), new Date(), { locale: ja });
@@ -172,13 +178,17 @@ const ChatInterface = ({ conversationId, onConversationCreated }: ChatInterfaceP
       <div className="flex-1 overflow-y-auto p-4">
         {fetchError && (
           <div className="p-4 mb-4 rounded-md bg-destructive/10 text-destructive">
-            <p>{fetchError}</p>
+            <div className="flex items-center mb-2">
+              <AlertTriangle className="h-5 w-5 mr-2" />
+              <p className="font-medium">{fetchError}</p>
+            </div>
             <Button 
               variant="outline" 
               size="sm" 
               className="mt-2"
-              onClick={() => window.location.reload()}
+              onClick={handleRetry}
             >
+              <RefreshCw className="h-4 w-4 mr-2" />
               再読み込み
             </Button>
           </div>

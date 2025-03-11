@@ -195,11 +195,9 @@ serve(async (req) => {
     console.log("Creating Supabase client");
     const supabase = supabaseClient(req);
     
-    // Get user ID - anonymously if not authenticated
-    const { data: { user } } = await supabase.auth.getUser();
-    // Use a default anonymous user ID if not authenticated
-    const userId = user?.id || 'anonymous-user';
-    console.log("User ID:", userId);
+    // Disable authentication requirement - use a default anonymous user ID
+    const userId = 'anonymous-user';
+    console.log("Using anonymous user ID:", userId);
     
     // Create conversation if not provided
     let activeConversationId = conversationId;
