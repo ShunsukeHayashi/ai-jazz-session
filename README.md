@@ -62,8 +62,44 @@ This project is built with .
 
 ## How can I deploy this project?
 
+### Using Lovable
+
 Simply open [Lovable](https://lovable.dev/projects/dc1774e3-e79c-407e-9b59-032131b6b162) and click on Share -> Publish.
+
+### Using Docker
+
+This project includes Docker configuration for easy deployment. See [Docker Setup](README.docker.md) for detailed instructions.
+
+Quick start:
+
+```bash
+# Test your Docker setup first
+# For Unix-based systems
+chmod +x docker-test.sh
+./docker-test.sh
+
+# For Windows
+docker-test.bat
+
+# Then build and run
+# For Unix-based systems
+chmod +x docker-scripts.sh
+./docker-scripts.sh setup
+./docker-scripts.sh build
+./docker-scripts.sh start
+
+# For Windows
+docker-scripts.bat setup
+docker-scripts.bat build
+docker-scripts.bat start
+```
+
+Once running, access the application at:
+- Web application: http://localhost:4173
+- Supabase Edge Functions: http://localhost:8000
 
 ## I want to use a custom domain - is that possible?
 
 We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+
+Alternatively, you can use the Docker setup with your own hosting provider and configure the domain there.

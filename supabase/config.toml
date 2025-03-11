@@ -1,4 +1,3 @@
-
 project_id = "zrjbqubkctepwgntxqft"
 
 [api]
@@ -55,4 +54,4 @@ vector_port = 54328
 backend = "postgres"
 
 [experimental]
-events_per_second = 1
+# Removed unsupported configuration

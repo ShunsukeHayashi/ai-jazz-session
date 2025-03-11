@@ -165,7 +165,7 @@ const executeAgentTool = async (toolName: string, params: Record<string, any>): 
     }
   }
   
-  return null;
+  return `Tool ${toolName} not found`;
 };
 
 serve(async (req) => {
@@ -195,9 +195,31 @@ serve(async (req) => {
     console.log("Creating Supabase client");
     const supabase = supabaseClient(req);
     
-    // Disable authentication requirement - use a default anonymous user ID
-    const userId = 'anonymous-user';
-    console.log("Using anonymous user ID:", userId);
+    // Get user ID from JWT if available, otherwise use anonymous ID
+    let userId = 'anonymous-user';
+    
+    // Try to get the user ID from the authorization header
+    const authHeader = req.headers.get('Authorization');
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      try {
+        // Extract the JWT token
+        const token = authHeader.split(' ')[1];
+        // Parse the JWT payload (second part of the token)
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        // Get the user ID from the payload if it exists
+        if (payload.sub) {
+          userId = payload.sub;
+          console.log("Using authenticated user ID:", userId);
+        } else {
+          console.log("No user ID found in JWT, using anonymous user ID");
+        }
+      } catch (error) {
+        console.warn("Error parsing JWT token:", error);
+        console.log("Falling back to anonymous user ID");
+      }
+    } else {
+      console.log("No authorization header found, using anonymous user ID");
+    }
     
     // Create conversation if not provided
     let activeConversationId = conversationId;

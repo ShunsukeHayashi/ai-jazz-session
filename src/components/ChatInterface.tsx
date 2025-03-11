@@ -88,12 +88,17 @@ const ChatInterface = ({ conversationId, onConversationCreated }: ChatInterfaceP
     
     try {
       console.log("Calling chat Edge Function");
+      // Get the current session to include auth token if available
+      const { data: { session } } = await supabase.auth.getSession();
+      
       const response = await supabase.functions.invoke('chat', {
         body: { 
           message: userMessage,
           conversationId,
           agentMode: true
         },
+        // The Supabase JS client will automatically include the Authorization header
+        // with the session token if a session exists
       });
       
       console.log("Response from Edge Function:", response);

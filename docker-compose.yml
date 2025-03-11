@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "4173:4173"
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+    volumes:
+      - ./dist:/app/dist
+    networks:
+      - app-network
+
+  # Supabase Edge Functions service
+  supabase-functions:
+    image: supabase/edge-runtime:v1
+    ports:
+      - "8000:8000"
+    environment:
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    volumes:
+      - ./supabase/functions:/home/deno/functions
+    command: ["start", "--main-service", "/home/deno/functions"]
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
