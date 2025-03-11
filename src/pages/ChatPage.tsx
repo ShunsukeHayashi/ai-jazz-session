@@ -74,7 +74,7 @@ const ChatPage = () => {
         if (data) setConversations(data);
         setIsLoading(false);
       })
-      .catch(error => {
+      .catch((error) => {
         console.error('Error refreshing conversations:', error);
         setIsLoading(false);
       });
@@ -84,8 +84,8 @@ const ChatPage = () => {
     <div className="flex flex-col min-h-screen">
       <Header />
       
-      {/* Add pt-16 (padding-top) to push content below fixed header */}
-      <main className="flex-1 flex flex-col md:flex-row pt-16">
+      {/* パディングを増やして、ヘッダーと十分な間隔を確保 (pt-20) */}
+      <main className="flex-1 flex flex-col md:flex-row pt-20">
         <ChatSidebar 
           conversations={conversations}
           activeConversation={activeConversation}

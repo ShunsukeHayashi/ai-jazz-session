@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -27,7 +26,6 @@ const ChatInterface = ({ conversationId, onConversationCreated }: ChatInterfaceP
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [fetchError, setFetchError] = useState<string | null>(null);
 
-  // Fetch messages for the active conversation
   useEffect(() => {
     const fetchMessages = async () => {
       if (!conversationId) {
@@ -49,7 +47,6 @@ const ChatInterface = ({ conversationId, onConversationCreated }: ChatInterfaceP
           return;
         }
         
-        // Cast the role to ensure it conforms to our Message type
         const typedMessages = data?.map(msg => ({
           ...msg,
           role: msg.role as 'user' | 'assistant'
@@ -65,7 +62,6 @@ const ChatInterface = ({ conversationId, onConversationCreated }: ChatInterfaceP
     fetchMessages();
   }, [conversationId]);
 
-  // Scroll to bottom when messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
@@ -79,7 +75,6 @@ const ChatInterface = ({ conversationId, onConversationCreated }: ChatInterfaceP
     setInput('');
     setIsLoading(true);
     
-    // Add optimistic user message to the UI
     const optimisticUserMsg: Message = {
       id: Date.now().toString(),
       role: 'user',
@@ -90,12 +85,11 @@ const ChatInterface = ({ conversationId, onConversationCreated }: ChatInterfaceP
     setMessages((prev) => [...prev, optimisticUserMsg]);
     
     try {
-      // Call chat endpoint
       const response = await supabase.functions.invoke('chat', {
         body: { 
           message: userMessage,
           conversationId,
-          agentMode: true // Enable agent functionality
+          agentMode: true
         },
       });
       
@@ -111,12 +105,10 @@ const ChatInterface = ({ conversationId, onConversationCreated }: ChatInterfaceP
       
       const newConversationId = data.conversationId;
       
-      // If this was a new conversation, notify parent
       if (!conversationId && newConversationId) {
         onConversationCreated(newConversationId);
       }
       
-      // Refresh messages to get the full history including the AI response
       const { data: updatedMessages, error: messagesError } = await supabase
         .from('messages')
         .select('*')
@@ -127,7 +119,6 @@ const ChatInterface = ({ conversationId, onConversationCreated }: ChatInterfaceP
         throw messagesError;
       }
       
-      // Cast the role to ensure it conforms to our Message type
       const typedMessages = updatedMessages?.map(msg => ({
         ...msg,
         role: msg.role as 'user' | 'assistant'
@@ -143,7 +134,6 @@ const ChatInterface = ({ conversationId, onConversationCreated }: ChatInterfaceP
         variant: 'destructive',
       });
       
-      // Remove optimistic message on error
       setMessages((prev) => prev.filter(msg => msg.id !== optimisticUserMsg.id));
     } finally {
       setIsLoading(false);
