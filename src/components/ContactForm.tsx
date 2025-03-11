@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 const ContactForm = () => {
   const { toast } = useToast();
@@ -18,13 +19,29 @@ const ContactForm = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate form submission - in MVP we'd connect this to Google Forms or similar
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      // Insert data into Supabase
+      const { error } = await supabase
+        .from('contact_submissions')
+        .insert([
+          { 
+            name: formData.name,
+            email: formData.email,
+            facility: formData.facility || null,
+            message: formData.message || null
+          }
+        ]);
+      
+      if (error) {
+        console.error('Error submitting form:', error);
+        throw error;
+      }
+      
+      // Reset form
       setFormData({
         name: '',
         email: '',
@@ -36,7 +53,17 @@ const ContactForm = () => {
         title: "お申し込みありがとうございます！",
         description: "近日中にご連絡させていただきます。",
       });
-    }, 1000);
+      
+    } catch (error) {
+      console.error('Error:', error);
+      toast({
+        title: "エラーが発生しました",
+        description: "申し訳ありませんが、後ほど再度お試しください。",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
