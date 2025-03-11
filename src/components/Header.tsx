@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
+import { Link } from 'react-router-dom';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -21,6 +22,7 @@ const Header = () => {
     { name: 'カスタマー', href: '#customers' },
     { name: 'ワークフロー', href: '#workflow' },
     { name: '社会的意義', href: '#significance' },
+    { name: 'チャット', href: '/chat' },
   ];
 
   return (
@@ -36,7 +38,7 @@ const Header = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <a 
-            href="#" 
+            href="/" 
             className="flex items-center space-x-2 transition-transform duration-300 hover:scale-105"
           >
             <div className="flex flex-col">
@@ -48,13 +50,23 @@ const Header = () => {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
             {navLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                className="text-sm font-medium text-foreground/80 hover:text-foreground transition-all duration-200 hover:scale-105"
-              >
-                {link.name}
-              </a>
+              link.href.startsWith('/') ? (
+                <Link
+                  key={link.name}
+                  to={link.href}
+                  className="text-sm font-medium text-foreground/80 hover:text-foreground transition-all duration-200 hover:scale-105"
+                >
+                  {link.name}
+                </Link>
+              ) : (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  className="text-sm font-medium text-foreground/80 hover:text-foreground transition-all duration-200 hover:scale-105"
+                >
+                  {link.name}
+                </a>
+              )
             ))}
           </nav>
 
@@ -74,14 +86,25 @@ const Header = () => {
         <div className={`md:hidden transition-all duration-300 overflow-hidden ${isMobileMenuOpen ? 'max-h-60 mt-4' : 'max-h-0'}`}>
           <div className="flex flex-col space-y-4 py-2">
             {navLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                {link.name}
-              </a>
+              link.href.startsWith('/') ? (
+                <Link
+                  key={link.name}
+                  to={link.href}
+                  className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {link.name}
+                </Link>
+              ) : (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {link.name}
+                </a>
+              )
             ))}
           </div>
         </div>
