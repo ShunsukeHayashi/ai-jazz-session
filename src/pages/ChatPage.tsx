@@ -66,18 +66,25 @@ const ChatPage = () => {
     setActiveConversation(conversationId);
     // Refresh the conversation list 
     setIsLoading(true);
-    supabase
-      .from('conversations')
-      .select('id, title, created_at')
-      .order('created_at', { ascending: false })
-      .then(({ data }) => {
+    
+    // Fix: Use a proper async/await pattern with try/catch for error handling
+    const refreshConversations = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('conversations')
+          .select('id, title, created_at')
+          .order('created_at', { ascending: false });
+          
+        if (error) throw error;
         if (data) setConversations(data);
-        setIsLoading(false);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error('Error refreshing conversations:', error);
+      } finally {
         setIsLoading(false);
-      });
+      }
+    };
+    
+    refreshConversations();
   };
 
   return (
