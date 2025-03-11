@@ -13,22 +13,54 @@ const CTASection = () => {
             あなたの施設を『シュンスケの旅』で笑顔に！
           </h2>
           
-          <p className="text-lg md:text-xl text-muted-foreground mb-10">
-            宿泊や飲食の提供だけで参加可能。特別な予算は必要ありません。<br />
-            まずはお気軽にお問い合わせください。
+          <p className="text-lg md:text-xl text-muted-foreground mb-8">
+            AI駆動開発ハッカソンで業務課題を解決！<br />
+            2ヶ月に1回開催、限定30名様のみ参加可能
           </p>
           
-          <Button
-            className="px-8 py-6 rounded-full bg-primary text-white font-medium text-lg transition-all hover:shadow-lg hover:shadow-primary/20 hover:scale-105 active:scale-95"
-            onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
-          >
-            🎷 無料AIセッションを申し込む！
-          </Button>
+          <div className="glass-card p-6 mb-8">
+            <h3 className="text-xl font-semibold mb-3">ハッカソン参加プラン</h3>
+            <ul className="space-y-2 text-left mb-4">
+              <li className="flex items-start">
+                <span className="mr-2 text-primary">✓</span>
+                <span>参加費: <span className="font-semibold">5万円/人</span> (30名限定)</span>
+              </li>
+              <li className="flex items-start">
+                <span className="mr-2 text-primary">✓</span>
+                <span>ホテル・旅館でのリアルな課題解決</span>
+              </li>
+              <li className="flex items-start">
+                <span className="mr-2 text-primary">✓</span>
+                <span>プロによるAI駆動開発指導</span>
+              </li>
+              <li className="flex items-start">
+                <span className="mr-2 text-primary">✓</span>
+                <span>宿泊・食事込みの充実サービス</span>
+              </li>
+            </ul>
+          </div>
           
-          <div className="mt-8 p-4 border border-border rounded-lg bg-background/50">
+          <div className="flex flex-col md:flex-row justify-center gap-4 mb-8">
+            <Button
+              className="px-8 py-6 rounded-full bg-primary text-white font-medium text-lg transition-all hover:shadow-lg hover:shadow-primary/20 hover:scale-105 active:scale-95"
+              onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+            >
+              🎷 参加者として申し込む！
+            </Button>
+            
+            <Button
+              variant="outline"
+              className="px-8 py-6 rounded-full border-primary text-primary font-medium text-lg transition-all hover:bg-primary/10 hover:scale-105 active:scale-95"
+              onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+            >
+              🏨 会場として応募する
+            </Button>
+          </div>
+          
+          <div className="p-4 border border-border rounded-lg bg-background/50">
             <p className="text-sm text-muted-foreground">
-              ※現在、先着10施設限定でサービスを提供しています。
-              お早めにお申し込みください。
+              ※2ヶ月に1回開催、会場のホテル・旅館ではAI駆動開発による業務課題解決をお約束します。<br />
+              開催スケジュールは申し込み後にご案内いたします。
             </p>
           </div>
         </div>
