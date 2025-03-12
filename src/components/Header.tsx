@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { Link } from 'react-router-dom';
-import { MessageCircle } from 'lucide-react';
+import { MessageCircle, Twitter, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const Header = () => {
@@ -24,6 +24,19 @@ const Header = () => {
     { name: 'カスタマー', href: '#customers' },
     { name: 'ワークフロー', href: '#workflow' },
     { name: '社会的意義', href: '#significance' },
+  ];
+
+  const socialLinks = [
+    { 
+      name: 'X / Twitter', 
+      href: 'https://x.com/Shunsuke__H__', 
+      icon: <Twitter className="h-5 w-5" /> 
+    },
+    { 
+      name: 'Note ブログ', 
+      href: 'https://note.ambitiousai.co.jp/', 
+      icon: <ExternalLink className="h-5 w-5" /> 
+    }
   ];
 
   return (
@@ -48,8 +61,24 @@ const Header = () => {
             </div>
           </a>
 
-          {/* Prominent Chat Button for Mobile - Always Visible */}
-          <div className="flex items-center gap-4">
+          {/* Social and Chat Buttons for Mobile - Always Visible */}
+          <div className="flex items-center gap-2 md:gap-4">
+            {/* Social links for mobile */}
+            <div className="flex md:hidden items-center gap-2">
+              {socialLinks.map((link) => (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 rounded-full bg-primary/10 hover:bg-primary/20 transition-colors"
+                  aria-label={link.name}
+                >
+                  {link.icon}
+                </a>
+              ))}
+            </div>
+            
             <Link to="/chat" className="md:hidden">
               <Button size="lg" className="bg-primary hover:bg-primary/90 flex items-center gap-2 text-white">
                 <MessageCircle className="h-5 w-5" />
@@ -58,7 +87,7 @@ const Header = () => {
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-8">
+            <nav className="hidden md:flex items-center space-x-6">
               {navLinks.map((link) => (
                 link.href.startsWith('/') ? (
                   <Link
@@ -78,6 +107,23 @@ const Header = () => {
                   </a>
                 )
               ))}
+              
+              {/* Social Links for Desktop */}
+              <div className="flex items-center gap-3 border-l pl-3 border-gray-300 dark:border-gray-700">
+                {socialLinks.map((link) => (
+                  <a
+                    key={link.name}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-2 rounded-full bg-primary/10 hover:bg-primary/20 transition-colors flex items-center gap-2"
+                    title={link.name}
+                  >
+                    {link.icon}
+                    <span className="text-sm hidden xl:inline">{link.name}</span>
+                  </a>
+                ))}
+              </div>
               
               {/* Very Prominent Chat Button for Desktop */}
               <Link to="/chat">
@@ -101,8 +147,8 @@ const Header = () => {
           </div>
         </div>
 
-        {/* Mobile Navigation - Better positioning and styling */}
-        <div className={`md:hidden transition-all duration-300 overflow-hidden absolute left-0 right-0 bg-white/95 dark:bg-black/95 backdrop-blur-lg shadow-md ${isMobileMenuOpen ? 'max-h-72 mt-4 px-6 py-4' : 'max-h-0'}`}>
+        {/* Mobile Navigation */}
+        <div className={`md:hidden transition-all duration-300 overflow-hidden absolute left-0 right-0 bg-white/95 dark:bg-black/95 backdrop-blur-lg shadow-md ${isMobileMenuOpen ? 'max-h-96 mt-4 px-6 py-4' : 'max-h-0'}`}>
           <div className="flex flex-col space-y-4 py-2">
             {navLinks.map((link) => (
               link.href.startsWith('/') ? (
@@ -125,10 +171,29 @@ const Header = () => {
                 </a>
               )
             ))}
-            {/* Add Chat link to mobile menu as well - Large and prominent */}
+            
+            {/* Social Links for Mobile Menu */}
+            <div className="flex flex-col gap-2 pt-2 border-t border-gray-200 dark:border-gray-800">
+              <h3 className="text-sm font-medium text-muted-foreground">SNS & ブログ</h3>
+              {socialLinks.map((link) => (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm font-medium text-foreground/80 hover:text-foreground transition-colors flex items-center gap-2"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {link.icon}
+                  <span>{link.name}</span>
+                </a>
+              ))}
+            </div>
+            
+            {/* Chat link in mobile menu */}
             <Link
               to="/chat"
-              className="text-base font-bold text-primary hover:text-primary/80 flex items-center gap-2 bg-primary/10 p-3 rounded-md"
+              className="text-base font-bold text-primary hover:text-primary/80 flex items-center gap-2 bg-primary/10 p-3 rounded-md mt-2"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               <MessageCircle className="h-5 w-5" />
