@@ -195,7 +195,7 @@ serve(async (req) => {
     console.log("Creating Supabase client");
     const supabase = supabaseClient(req);
     
-    // Disable authentication requirement - use a default anonymous user ID
+    // Use anonymous user ID to avoid auth requirements
     const userId = 'anonymous-user';
     console.log("Using anonymous user ID:", userId);
     

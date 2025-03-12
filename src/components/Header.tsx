@@ -48,50 +48,50 @@ const Header = () => {
             </div>
           </a>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
-            {navLinks.map((link) => (
-              link.href.startsWith('/') ? (
-                <Link
-                  key={link.name}
-                  to={link.href}
-                  className="text-sm font-medium text-foreground/80 hover:text-foreground transition-all duration-200 hover:scale-105"
-                >
-                  {link.name}
-                </Link>
-              ) : (
-                <a
-                  key={link.name}
-                  href={link.href}
-                  className="text-sm font-medium text-foreground/80 hover:text-foreground transition-all duration-200 hover:scale-105"
-                >
-                  {link.name}
-                </a>
-              )
-            ))}
-            
-            {/* Prominent Chat Button */}
-            <Link to="/chat">
-              <Button className="flex items-center gap-2 bg-primary hover:bg-primary/90">
-                <MessageCircle className="h-4 w-4" />
-                AIチャット
+          {/* Prominent Chat Button for Mobile - Always Visible */}
+          <div className="flex items-center gap-4">
+            <Link to="/chat" className="md:hidden">
+              <Button size="lg" className="bg-primary hover:bg-primary/90 flex items-center gap-2 text-white">
+                <MessageCircle className="h-5 w-5" />
+                <span>チャット</span>
               </Button>
             </Link>
-          </nav>
 
-          {/* Mobile Menu Toggle */}
-          <div className="flex items-center gap-2 md:hidden">
-            {/* Chat button for mobile */}
-            <Link to="/chat" className="mr-2">
-              <Button size="sm" variant="outline" className="flex items-center gap-1">
-                <MessageCircle className="h-4 w-4" />
-                <span className="sr-only md:not-sr-only">チャット</span>
-              </Button>
-            </Link>
-            
+            {/* Desktop Navigation */}
+            <nav className="hidden md:flex items-center space-x-8">
+              {navLinks.map((link) => (
+                link.href.startsWith('/') ? (
+                  <Link
+                    key={link.name}
+                    to={link.href}
+                    className="text-sm font-medium text-foreground/80 hover:text-foreground transition-all duration-200 hover:scale-105"
+                  >
+                    {link.name}
+                  </Link>
+                ) : (
+                  <a
+                    key={link.name}
+                    href={link.href}
+                    className="text-sm font-medium text-foreground/80 hover:text-foreground transition-all duration-200 hover:scale-105"
+                  >
+                    {link.name}
+                  </a>
+                )
+              ))}
+              
+              {/* Very Prominent Chat Button for Desktop */}
+              <Link to="/chat">
+                <Button size="lg" className="bg-primary hover:bg-primary/90 flex items-center gap-2 text-lg px-6 py-6 animate-pulse">
+                  <MessageCircle className="h-5 w-5" />
+                  AIチャットを試す
+                </Button>
+              </Link>
+            </nav>
+
+            {/* Mobile Menu Toggle */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="flex flex-col space-y-1.5 p-2"
+              className="flex md:hidden flex-col space-y-1.5 p-2"
               aria-label="Toggle menu"
             >
               <span className={`block w-6 h-0.5 bg-foreground transition-all duration-300 ${isMobileMenuOpen ? 'rotate-45 translate-y-2' : ''}`}></span>
@@ -125,14 +125,14 @@ const Header = () => {
                 </a>
               )
             ))}
-            {/* Add Chat link to mobile menu as well */}
+            {/* Add Chat link to mobile menu as well - Large and prominent */}
             <Link
               to="/chat"
-              className="text-sm font-medium text-primary hover:text-primary/80 flex items-center gap-2"
+              className="text-base font-bold text-primary hover:text-primary/80 flex items-center gap-2 bg-primary/10 p-3 rounded-md"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              <MessageCircle className="h-4 w-4" />
-              AIチャットを試す
+              <MessageCircle className="h-5 w-5" />
+              AIチャットを今すぐ試す！
             </Link>
           </div>
         </div>
