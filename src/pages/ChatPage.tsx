@@ -3,9 +3,13 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import ChatInterface from '@/components/ChatInterface';
 import ChatSidebar from '@/components/ChatSidebar';
+import JazzSessionService from '@/components/JazzSessionService';
+import ServiceDashboard from '@/components/ServiceDashboard';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { useToast } from '@/hooks/use-toast';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { MessageSquare, BarChart3, Settings } from 'lucide-react';
 
 interface Conversation {
   id: string;
@@ -88,24 +92,57 @@ const ChatPage = () => {
     }
   };
 
+  const [activeTab, setActiveTab] = useState('chat');
+
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
       
       {/* パディングを増やして、ヘッダーと十分な間隔を確保 (pt-20) */}
-      <main className="flex-1 flex flex-col md:flex-row pt-20">
-        <ChatSidebar 
-          conversations={conversations}
-          activeConversation={activeConversation}
-          onNewConversation={handleNewConversation}
-          onConversationSelect={handleConversationSelect}
-          isLoading={isLoading}
-        />
-        
-        <ChatInterface 
-          conversationId={activeConversation}
-          onConversationCreated={handleConversationCreated}
-        />
+      <main className="flex-1 flex flex-col pt-20">
+        <div className="container mx-auto px-4 mb-6">
+          <Tabs defaultValue={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="chat">
+                <MessageSquare className="h-4 w-4 mr-2" />
+                チャット
+              </TabsTrigger>
+              <TabsTrigger value="service">
+                <Settings className="h-4 w-4 mr-2" />
+                サービス管理
+              </TabsTrigger>
+              <TabsTrigger value="dashboard">
+                <BarChart3 className="h-4 w-4 mr-2" />
+                ダッシュボード
+              </TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="chat" className="mt-6">
+              <div className="flex flex-col md:flex-row">
+                <ChatSidebar 
+                  conversations={conversations}
+                  activeConversation={activeConversation}
+                  onNewConversation={handleNewConversation}
+                  onConversationSelect={handleConversationSelect}
+                  isLoading={isLoading}
+                />
+                
+                <ChatInterface 
+                  conversationId={activeConversation}
+                  onConversationCreated={handleConversationCreated}
+                />
+              </div>
+            </TabsContent>
+            
+            <TabsContent value="service" className="mt-6">
+              <JazzSessionService conversationId={activeConversation} />
+            </TabsContent>
+            
+            <TabsContent value="dashboard" className="mt-6">
+              <ServiceDashboard />
+            </TabsContent>
+          </Tabs>
+        </div>
       </main>
       
       <Footer />
