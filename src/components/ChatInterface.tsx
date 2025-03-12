@@ -139,8 +139,8 @@ const ChatInterface = ({ conversationId, onConversationCreated }: ChatInterfaceP
     } catch (error) {
       console.error('Error sending message:', error);
       toast({
-        title: 'メッセージの送信に失敗しました',
-        description: error instanceof Error ? error.message : '不明なエラーが発生しました',
+        title: 'メッセージの送信に失敗しました 🙇‍♂️',
+        description: error instanceof Error ? error.message : '不明なエラーが発生しました。お手数ですが、再度お試しくださいませ。',
         variant: 'destructive',
       });
       
@@ -180,8 +180,11 @@ const ChatInterface = ({ conversationId, onConversationCreated }: ChatInterfaceP
           <div className="p-4 mb-4 rounded-md bg-destructive/10 text-destructive">
             <div className="flex items-center mb-2">
               <AlertTriangle className="h-5 w-5 mr-2" />
-              <p className="font-medium">{fetchError}</p>
+              <p className="font-medium">{fetchError} 😓</p>
             </div>
+            <p className="text-sm mb-2 text-muted-foreground">
+              申し訳ございませんが、データの読み込みに問題が発生しました。再読み込みをお試しください。
+            </p>
             <Button 
               variant="outline" 
               size="sm" 

@@ -76,37 +76,38 @@ export function useJapaneseNotification() {
       day: 'numeric',
       hour: '2-digit',
       minute: '2-digit',
+      weekday: 'long',
     }).format(date);
   };
   
   // 成功通知（敬語）
   const notifySuccess = (message: string, details?: string) => {
-    const title = `${message}しました`;
+    const title = `${message}いたしました ✅`;
     const description = details ? `${details}` : undefined;
     return showSuccess(title, description);
   };
   
   // エラー通知（敬語）
   const notifyError = (message: string, details?: string) => {
-    const title = `${message}できませんでした`;
-    const description = details ? `${details}。お手数ですが、再度お試しください。` : 'お手数ですが、再度お試しください。';
+    const title = `${message}できませんでした 🙇‍♂️`;
+    const description = details ? `${details}。お手数ですが、再度お試しくださいませ。` : 'お手数ですが、再度お試しくださいませ。';
     return showError(title, description);
   };
   
   // 情報通知（敬語）
   const notifyInfo = (message: string, details?: string) => {
-    return showInfo(message, details);
+    return showInfo(`${message} 📝`, details);
   };
   
   // 処理中通知
   const notifyProcessing = (message: string) => {
-    return showInfo(`${message}処理中です...`, '少々お待ちください');
+    return showInfo(`${message}処理中です... ⏳`, '少々お待ちくださいませ');
   };
   
   // 完了通知
   const notifyComplete = (message: string, timestamp?: Date) => {
     const timeInfo = timestamp ? `（${formatJapaneseDate(timestamp)}）` : '';
-    return showSuccess(`${message}が完了しました ${timeInfo}`, 'ありがとうございます');
+    return showSuccess(`${message}が完了いたしました ${timeInfo} 🎉`, 'ありがとうございます');
   };
   
   return {
