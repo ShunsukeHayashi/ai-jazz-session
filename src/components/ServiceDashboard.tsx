@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { PieChart, Pie, Cell } from 'recharts';
-import { ChartContainer, ChartTitle, ChartDescription } from '@/components/ui/chart';
+import { ChartContainer } from '@/components/ui/chart';
 import { Music, BarChart3, PieChart as PieChartIcon, Users } from 'lucide-react';
 
 // サンプルデータ
@@ -59,11 +59,11 @@ const ServiceDashboard = () => {
           </TabsList>
           
           <TabsContent value="usage" className="space-y-4">
-            <ChartContainer>
-              <ChartTitle>月間利用状況</ChartTitle>
-              <ChartDescription>
+            <div className="rounded-lg bg-muted p-4">
+              <h3 className="text-lg font-medium">月間利用状況</h3>
+              <p className="text-sm text-muted-foreground">
                 AIジャズセッションの月間利用状況を表示しています
-              </ChartDescription>
+              </p>
               <div className="h-[300px] mt-4">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart
@@ -84,7 +84,7 @@ const ServiceDashboard = () => {
                   </BarChart>
                 </ResponsiveContainer>
               </div>
-            </ChartContainer>
+            </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
               <Card>
@@ -118,11 +118,11 @@ const ServiceDashboard = () => {
           </TabsContent>
           
           <TabsContent value="categories" className="space-y-4">
-            <ChartContainer>
-              <ChartTitle>質問カテゴリ分布</ChartTitle>
-              <ChartDescription>
+            <div className="rounded-lg bg-muted p-4">
+              <h3 className="text-lg font-medium">質問カテゴリ分布</h3>
+              <p className="text-sm text-muted-foreground">
                 AIジャズセッションで最も多く質問されるカテゴリ
-              </ChartDescription>
+              </p>
               <div className="h-[300px] mt-4">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
@@ -144,7 +144,7 @@ const ServiceDashboard = () => {
                   </PieChart>
                 </ResponsiveContainer>
               </div>
-            </ChartContainer>
+            </div>
             
             <div className="mt-4">
               <Card>
