@@ -1,69 +1,129 @@
-# Welcome to your Lovable project
+# AIジャズセッション - ホテル・旅館向けAIサポートサービス
 
-## Project info
+AIジャズセッションは、ホテルや旅館の経営者やスタッフ向けに、ビジネス改善のためのAIチャットインターフェースを提供するサービスです。
 
-**URL**: https://lovable.dev/projects/dc1774e3-e79c-407e-9b59-032131b6b162
+## 機能概要
 
-## How can I edit this code?
+- **AIチャットインターフェース**: ホテル・旅館の運営に関する質問や相談ができます
+- **サービス管理**: サービスの有効化・無効化、設定の管理
+- **ダッシュボード**: 利用状況、カテゴリ分析、ユーザー分析などの統計情報
 
-There are several ways of editing your application.
+## 技術スタック
 
-**Use Lovable**
+- **フロントエンド**: React, TypeScript, Vite, Shadcn/ui
+- **バックエンド**: Supabase (Edge Functions, Database, Auth)
+- **AI**: OpenAI API
+- **データ分析**: Recharts
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/dc1774e3-e79c-407e-9b59-032131b6b162) and start prompting.
+## 始め方
 
-Changes made via Lovable will be committed automatically to this repo.
+### 前提条件
 
-**Use your preferred IDE**
+- Node.js 18以上
+- npm または pnpm
+- Supabase アカウント
+- OpenAI API キー
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### インストール
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+```bash
+# リポジトリのクローン
+git clone https://github.com/ShunsukeHayashi/ai-jazz-session.git
+cd ai-jazz-session
 
-Follow these steps:
+# 依存関係のインストール
+npm install
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# 開発サーバーの起動
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+### 環境変数の設定
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+`.env` ファイルを作成し、以下の環境変数を設定してください：
 
-**Use GitHub Codespaces**
+```
+VITE_SUPABASE_URL=あなたのSupabaseプロジェクトURL
+VITE_SUPABASE_ANON_KEY=あなたのSupabaseの匿名キー
+OPENAI_API_KEY=あなたのOpenAI APIキー
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## サービスの使い方
 
-## What technologies are used for this project?
+### チャットインターフェース
 
-This project is built with .
+1. アプリケーションにアクセスし、「チャット」タブを選択します
+2. 新しい会話を開始するには、サイドバーの「新しい会話」ボタンをクリックします
+3. テキスト入力欄に質問や相談内容を入力し、送信ボタンをクリックします
+4. AIからの回答が表示されます
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### サービス管理
 
-## How can I deploy this project?
+1. 「サービス管理」タブを選択します
+2. 「サービスを有効化」ボタンをクリックしてサービスを開始します
+3. サービス設定タブでは、各種設定を変更できます
+4. サービス情報タブでは、現在のサービス状態を確認できます
 
-Simply open [Lovable](https://lovable.dev/projects/dc1774e3-e79c-407e-9b59-032131b6b162) and click on Share -> Publish.
+### ダッシュボード
 
-## I want to use a custom domain - is that possible?
+1. 「ダッシュボード」タブを選択します
+2. 利用状況、カテゴリ分析、ユーザー分析の各タブで統計情報を確認できます
+3. グラフや数値で、サービスの利用状況を視覚的に把握できます
 
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+## Supabase Edge Functions
+
+### デプロイ方法
+
+```bash
+# Supabase CLIのインストール
+npm install -g supabase
+
+# ログイン
+supabase login
+
+# Edge Functionsのデプロイ
+cd supabase
+supabase functions deploy --project-ref あなたのプロジェクトID
+```
+
+### 主要なEdge Functions
+
+- **chat**: AIとの会話を処理します
+- **service-status**: サービスの状態を確認します
+- **activate-service**: サービスを有効化します
+- **generate-embeddings**: ドキュメントの埋め込みを生成します
+- **seed-documents**: 初期ドキュメントをデータベースに登録します
+
+## データベース構造
+
+主要なテーブル：
+
+- **conversations**: 会話履歴を管理します
+- **messages**: 各会話内のメッセージを保存します
+- **documents**: ベクトル埋め込みを使用した知識ベースを提供します
+
+## 貢献方法
+
+1. このリポジトリをフォークします
+2. 新しいブランチを作成します (`git checkout -b feature/amazing-feature`)
+3. 変更をコミットします (`git commit -m '素晴らしい機能を追加'`)
+4. ブランチをプッシュします (`git push origin feature/amazing-feature`)
+5. プルリクエストを作成します
+
+## ライセンス
+
+このプロジェクトはMITライセンスの下で公開されています。
+
+---
+
+## Lovable プロジェクト情報
+
+**URL**: https://lovable.dev/projects/dc1774e3-e79c-407e-9b59-032131b6b162
+
+### Lovableでの編集方法
+
+[Lovable プロジェクト](https://lovable.dev/projects/dc1774e3-e79c-407e-9b59-032131b6b162)にアクセスしてプロンプトを開始できます。Lovableを通じて行われた変更は、このリポジトリに自動的にコミットされます。
+
+### デプロイ方法
+
+[Lovable](https://lovable.dev/projects/dc1774e3-e79c-407e-9b59-032131b6b162)を開き、「共有」→「公開」をクリックするだけです。

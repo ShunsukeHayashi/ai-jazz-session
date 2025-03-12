@@ -10,19 +10,25 @@ import ChatPage from "./pages/ChatPage";
 
 const queryClient = new QueryClient();
 
+import JapaneseErrorBoundary from "./components/JapaneseErrorBoundary";
+import { Notifications } from "./components/ToastNotification";
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/chat" element={<ChatPage />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+      <Notifications />
+      <JapaneseErrorBoundary>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/chat" element={<ChatPage />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </JapaneseErrorBoundary>
     </TooltipProvider>
   </QueryClientProvider>
 );
